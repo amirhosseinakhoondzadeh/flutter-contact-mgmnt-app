@@ -33,6 +33,10 @@ dependencies:
   flutter_bloc: ^4.0.1
   http: ^0.12.1
   data_connection_checker: ^0.3.4
+  json_annotation: ^3.0.1
+  cached_network_image: ^2.2.0+1
+
+
 
 
 
@@ -42,6 +46,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^4.1.1
+  build_runner: ^1.10.0
+  json_serializable: ^3.3.0
+
 
 
 # For information on the generic Dart part of this file, see the
@@ -71,15 +78,19 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Monstserrat
+    - family: Montserrat-Regular
       fonts:
         - asset: assets/fonts/Montserrat-Regular.ttf
+    - family: Montserrat-Medium
+      fonts:
         - asset: assets/fonts/Montserrat-Medium.ttf
-          weight: 500
+    - family: Montserrat-SemiBold
+      fonts:
         - asset: assets/fonts/Montserrat-SemiBold.ttf
-          weight: 600
+    - family: Montserrat-Bold
+      fonts:
         - asset: assets/fonts/Montserrat-Bold.ttf
-          weight: 700
+
 
   #
   # For details regarding fonts from package dependencies,

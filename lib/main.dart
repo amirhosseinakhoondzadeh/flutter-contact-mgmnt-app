@@ -19,12 +19,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: AppConstants.APP_NAME,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: AppConstants.APP_FONT,
+        fontFamily: AppConstants.APP_FONT_REGULAR,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: BlocProvider(
-        create: (_) => di.sl<CandidatesBloc>(),
+        create: (_) => di.sl<CandidatesBloc>()..add(LoadCandidates()),
         child: FrontScreen(),
       ),
     );
