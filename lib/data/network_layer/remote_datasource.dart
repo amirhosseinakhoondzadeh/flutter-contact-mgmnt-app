@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:a_job_thing_test/core/constants/constants.dart';
 import 'package:a_job_thing_test/core/errors/exceptions.dart';
+import 'package:a_job_thing_test/data/models/address.dart';
 import 'package:a_job_thing_test/data/models/basic_info.dart';
+import 'package:a_job_thing_test/data/models/contact.dart';
 import 'package:a_job_thing_test/data/models/experience.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
@@ -10,6 +12,8 @@ import 'package:meta/meta.dart';
 abstract class RemoteDataSource {
   Future<List<BasicInfo>> fetchBasicInfoList();
   Future<List<Experience>> fetchExperienceList();
+  Future<List<Contact>> fetchContactList();
+  Future<List<Address>> fetchAddressList();
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -62,6 +66,64 @@ class RemoteDataSourceImpl implements RemoteDataSource {
             ? null
             : jsonResponse
                 .map<Experience>((e) => Experience.fromJson(e) ?? null)
+                .toList();
+        return data;
+      } else {
+        final String error = jsonResponse.contains("error");
+        throw ServerException(message: error);
+      }
+    } catch (e) {
+      print("${e.toString()}");
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<List<Address>> fetchAddressList() async {
+    final url = "${AppConstants.BASE_URL}${AppConstants.ADDRESS_URL}";
+    print("url is : $url");
+    try {
+      final response = await client.get(
+        url,
+      );
+
+      final jsonResponse = json.decode(response.body);
+      print("Address Response : $jsonResponse");
+
+      if (response.statusCode == 200 && (jsonResponse is List)) {
+        final data = jsonResponse == null
+            ? null
+            : jsonResponse
+                .map<Address>((e) => Address.fromJson(e) ?? null)
+                .toList();
+        return data;
+      } else {
+        final String error = jsonResponse.contains("error");
+        throw ServerException(message: error);
+      }
+    } catch (e) {
+      print("${e.toString()}");
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<List<Contact>> fetchContactList() async {
+    final url = "${AppConstants.BASE_URL}${AppConstants.CONTACT_URL}";
+    print("url is : $url");
+    try {
+      final response = await client.get(
+        url,
+      );
+
+      final jsonResponse = json.decode(response.body);
+      print("Contact Response : $jsonResponse");
+
+      if (response.statusCode == 200 && (jsonResponse is List)) {
+        final data = jsonResponse == null
+            ? null
+            : jsonResponse
+                .map<Contact>((e) => Contact.fromJson(e) ?? null)
                 .toList();
         return data;
       } else {

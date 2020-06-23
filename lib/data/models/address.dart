@@ -9,7 +9,7 @@ class Address {
   final String city;
   final String state;
   @JsonKey(name: "zip_code")
-  final String zipCode;
+  final num zipCode;
 
   Address(this.id, this.address, this.city, this.state, this.zipCode);
 

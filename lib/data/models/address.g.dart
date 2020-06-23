@@ -12,7 +12,7 @@ Address _$AddressFromJson(Map<String, dynamic> json) {
     json['address'] as String,
     json['city'] as String,
     json['state'] as String,
-    json['zip_code'] as String,
+    json['zip_code'] as num,
   );
 }
 

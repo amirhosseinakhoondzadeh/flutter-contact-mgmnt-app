@@ -1,7 +1,8 @@
 import 'package:a_job_thing_test/blocs/bloc.dart';
 import 'package:a_job_thing_test/core/constants/colors.dart';
 import 'package:a_job_thing_test/core/constants/constants.dart';
-import 'package:a_job_thing_test/entities/candidate_list_item_entity.dart';
+import 'package:a_job_thing_test/entities/candidate_entity.dart';
+import 'package:a_job_thing_test/router.dart';
 import 'package:a_job_thing_test/widgets/rounded_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,8 +53,8 @@ class FrontScreen extends StatelessWidget {
                         itemBuilder: (context, index) =>
                             CandidateListItemWidget(
                           state.candidates[index],
-                          onItemTapped: () =>
-                              _onCandidateSelected(state.candidates[index]),
+                          onItemTapped: () => _onCandidateSelected(
+                              state.candidates[index], context),
                         ),
                         itemCount: state.candidates.length,
                       ),
@@ -84,13 +85,13 @@ class FrontScreen extends StatelessWidget {
     );
   }
 
-  _onCandidateSelected(CandidateListItem candidate) {
-    print(candidate);
+  _onCandidateSelected(Candidate candidate, BuildContext context) {
+    Navigator.of(context).pushNamed(Router.DETAIL, arguments: candidate);
   }
 }
 
 class CandidateListItemWidget extends StatelessWidget {
-  final CandidateListItem item;
+  final Candidate item;
   final VoidCallback onItemTapped;
 
   CandidateListItemWidget(this.item, {@required this.onItemTapped});
