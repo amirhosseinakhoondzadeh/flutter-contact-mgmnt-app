@@ -25,4 +25,26 @@ class AppConstants {
       "No Internet Connection!";
 
   static const String FRONT_SCREEN_TITLE = "Candidates";
+
+  static const String SUBJECT = 'subject';
+
+  static const String JOB_TITLE = "Job Title";
+  static const String STATUS = "Status";
+  static const String INDUSTRY = "Industry";
+  static const String ADDRESS = "Address";
+  static const String ZIP_CODE = "Zip Code";
+  static const String CITY = "City";
+  static const String STATE = "State";
+
+  static const String TRY_AGAIN_BUTTON = "TRY AGAIN";
+
+  static const String ERROR_PAGE_TITLE = "Your Connection seems sleeping";
+  static const String ERROR_PAGE_MESSAGE = "Please check your network settings";
+
+  /// Images Path
+  static const String CALL_ICON = "assets/icons/ic_call.png";
+  static const String MAIL_ICON = "assets/icons/ic_email.png";
+  static const String WHATS_APP_ICON = "assets/icons/ic_whatsapp.png";
+  static const String ARROW_BACK_ICON = "assets/icons/ic_arrow_back.png";
+  static const String ERROR_ICON = "assets/icons/ic_error_internet.png";
 }

@@ -3,11 +3,31 @@ import 'package:a_job_thing_test/core/constants/colors.dart';
 import 'package:a_job_thing_test/core/constants/constants.dart';
 import 'package:a_job_thing_test/entities/candidate_entity.dart';
 import 'package:a_job_thing_test/router.dart';
+import 'package:a_job_thing_test/ui/error_screen.dart';
 import 'package:a_job_thing_test/widgets/rounded_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
-class FrontScreen extends StatelessWidget {
+import '../dependency_injector.dart';
+
+class FrontScreen extends StatefulWidget {
+  @override
+  _FrontScreenState createState() => _FrontScreenState();
+}
+
+class _FrontScreenState extends State<FrontScreen> {
+  final _bloc = sl<CandidatesBloc>();
+
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+      GlobalKey<LiquidPullToRefreshState>();
+
+  @override
+  void initState() {
+    _bloc.add(LoadCandidates());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,10 +37,22 @@ class FrontScreen extends StatelessWidget {
       ),
       backgroundColor: AppColors.PAGE_BACKGROUND_COLOR,
       body: BlocListener<CandidatesBloc, CandidatesState>(
+        bloc: _bloc,
         listener: (context, state) {
-          if (state is CandidatesLoadingFailure) {}
+          if (state is CandidatesLoadingFailure) {
+            showDialog(
+                context: context,
+                builder: (context) => ErrorPreviewScreen(
+                    message: state.failureMessage,
+                    title: state.title,
+                    onTryAgain: () {
+                      Navigator.of(context).pop();
+                      _bloc.add(LoadCandidates());
+                    }));
+          }
         },
         child: BlocBuilder<CandidatesBloc, CandidatesState>(
+          bloc: _bloc,
           builder: (context, state) {
             if (state is CandidatesLoading) {
               return Container(
@@ -49,14 +81,20 @@ class FrontScreen extends StatelessWidget {
                       height: 32,
                     ),
                     Expanded(
-                      child: ListView.builder(
-                        itemBuilder: (context, index) =>
-                            CandidateListItemWidget(
-                          state.candidates[index],
-                          onItemTapped: () => _onCandidateSelected(
-                              state.candidates[index], context),
+                      child: LiquidPullToRefresh(
+                        key: _refreshIndicatorKey,
+                        showChildOpacityTransition: false,
+                        onRefresh: () =>
+                            Future(() => _bloc.add(LoadCandidates())),
+                        child: ListView.builder(
+                          itemBuilder: (context, index) =>
+                              CandidateListItemWidget(
+                            state.candidates[index],
+                            onItemTapped: () => _onCandidateSelected(
+                                state.candidates[index], context),
+                          ),
+                          itemCount: state.candidates.length,
                         ),
-                        itemCount: state.candidates.length,
                       ),
                     ),
                   ],

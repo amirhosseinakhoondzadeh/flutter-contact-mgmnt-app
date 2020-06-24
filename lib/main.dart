@@ -19,6 +19,8 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: Router.generateRoute,
       initialRoute: Router.INITIAL,
       theme: ThemeData(
+        primaryColor: Colors.grey,
+        accentColor: Colors.black45,
         fontFamily: AppConstants.APP_FONT_REGULAR,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),

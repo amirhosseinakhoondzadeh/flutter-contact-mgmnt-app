@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:a_job_thing_test/core/constants/colors.dart';
 import 'package:a_job_thing_test/core/constants/constants.dart';
+import 'package:a_job_thing_test/core/constants/styles.dart';
 import 'package:a_job_thing_test/entities/candidate_entity.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +50,8 @@ class DetailScreen extends StatelessWidget {
                   child: SafeArea(
                     top: true,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 16.0),
                       child: GestureDetector(
                         onTap: () => _onBackButtonTapped(context),
                         child: Align(
@@ -72,7 +76,8 @@ class DetailScreen extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: _detailsWidget("Industry", candidate.industry ?? "-",
+                  child: _detailsWidget(
+                      AppConstants.INDUSTRY, candidate.industry ?? "-",
                       textAlign: TextAlign.left),
                 ),
                 Container(
@@ -93,15 +98,15 @@ class DetailScreen extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: _detailsWidget(
-                            "Address", candidate.address ?? "",
+                            AppConstants.ADDRESS, candidate.address ?? "",
                             textAlign: TextAlign.left),
                       ),
                       Container(
                         width: 4,
                       ),
                       Expanded(
-                        child: _detailsWidget(
-                            "Zip Code", "${candidate.zipCode ?? "-"}",
+                        child: _detailsWidget(AppConstants.ZIP_CODE,
+                            "${candidate.zipCode ?? "-"}",
                             textAlign: TextAlign.left),
                       ),
                     ],
@@ -116,14 +121,16 @@ class DetailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Expanded(
-                        child: _detailsWidget("City", candidate.city ?? "-",
+                        child: _detailsWidget(
+                            AppConstants.CITY, candidate.city ?? "-",
                             textAlign: TextAlign.left),
                       ),
                       Container(
                         width: 4,
                       ),
                       Expanded(
-                        child: _detailsWidget("State", candidate.state ?? "-",
+                        child: _detailsWidget(
+                            AppConstants.STATE, candidate.state ?? "-",
                             textAlign: TextAlign.left),
                       ),
                     ],
@@ -171,9 +178,11 @@ class DetailScreen extends StatelessWidget {
                 height: 24,
               ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
-                      child: _detailsWidget("Status", candidate.status ?? "")),
+                      child: _detailsWidget(
+                          AppConstants.STATUS, candidate.status ?? "")),
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 8),
                     width: 1,
@@ -181,7 +190,8 @@ class DetailScreen extends StatelessWidget {
                     color: Colors.grey[200],
                   ),
                   Expanded(
-                      child: _detailsWidget("Job Title", candidate.jobTitle))
+                      child: _detailsWidget(
+                          AppConstants.JOB_TITLE, candidate.jobTitle))
                 ],
               ),
               Container(
@@ -192,13 +202,12 @@ class DetailScreen extends StatelessWidget {
                   Spacer(
                     flex: 2,
                   ),
-                  _centerIconButton("assets/icons/ic_call.png", _onCallTapped),
+                  _centerIconButton(AppConstants.CALL_ICON, _onCallTapped),
+                  Spacer(),
+                  _centerIconButton(AppConstants.MAIL_ICON, _onEmailTapped),
                   Spacer(),
                   _centerIconButton(
-                      "assets/icons/ic_email.png", _onEmailTapped),
-                  Spacer(),
-                  _centerIconButton(
-                      "assets/icons/ic_whatsapp.png", _onWhatsAppTapped),
+                      AppConstants.WHATS_APP_ICON, _onWhatsAppTapped),
                   Spacer(
                     flex: 2,
                   ),
@@ -245,27 +254,11 @@ class DetailScreen extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Text(
-          title,
-          textAlign: textAlign,
-          style: TextStyle(
-            fontFamily: AppConstants.APP_FONT_SEMI_BOLD,
-            color: Colors.grey[400],
-            fontSize: 16,
-          ),
-        ),
+        Text(title, textAlign: textAlign, style: valueSemiBoldTextStyle),
         Container(
-          height: 4,
+          height: 8,
         ),
-        Text(
-          details,
-          textAlign: textAlign,
-          style: TextStyle(
-            fontFamily: AppConstants.APP_FONT_BOLD,
-            color: Colors.grey[700],
-            fontSize: 16,
-          ),
-        ),
+        Text(details, textAlign: textAlign, style: detailsSemiBoldTextStyle),
       ],
     );
   }
@@ -278,14 +271,35 @@ class DetailScreen extends StatelessWidget {
     launch("tel://${candidate.phone}");
   }
 
-  void _onEmailTapped() async {
+  void _onEmailTapped() {
     final Uri _emailLaunchUri = Uri(
         scheme: 'mailto',
         path: '${candidate.email}',
-        queryParameters: {'subject': 'A Job Thing Test'});
+        queryParameters: {AppConstants.SUBJECT: 'A Job Thing Test'});
 
-    await launch(_emailLaunchUri.toString());
+    launch(_emailLaunchUri.toString());
   }
 
-  void _onWhatsAppTapped() {}
+  void _onWhatsAppTapped() {
+    launchWhatsApp(phone: candidate.phone, message: 'A Job Thing Test');
+  }
+
+  void launchWhatsApp({
+    @required String phone,
+    @required String message,
+  }) async {
+    String url() {
+      if (Platform.isIOS) {
+        return "whatsapp://wa.me/$phone/?text=${Uri.parse(message)}";
+      } else {
+        return "whatsapp://send?   phone=$phone&text=${Uri.parse(message)}";
+      }
+    }
+
+    if (await canLaunch(url())) {
+      await launch(url());
+    } else {
+      throw 'Could not launch ${url()}';
+    }
+  }
 }

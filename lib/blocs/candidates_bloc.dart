@@ -70,10 +70,12 @@ class CandidatesBloc extends Bloc<CandidatesEvent, CandidatesState> {
         yield CandidatesLoaded(candidates: candidateList);
       } else {
         yield CandidatesLoadingFailure(
-            failureMessage: AppConstants.DEFAULT_ERROR_MESSAGE);
+            failureMessage: AppConstants.DEFAULT_ERROR_MESSAGE,
+            title: AppConstants.ERROR_PAGE_TITLE);
       }
     } on Failure catch (e) {
-      yield CandidatesLoadingFailure(failureMessage: e.message);
+      yield CandidatesLoadingFailure(
+          failureMessage: e.message, title: AppConstants.ERROR_PAGE_TITLE);
     }
   }
 }

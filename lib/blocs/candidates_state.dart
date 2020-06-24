@@ -21,7 +21,9 @@ class CandidatesLoaded extends CandidatesState {
 
 class CandidatesLoadingFailure extends CandidatesState {
   final String failureMessage;
-  const CandidatesLoadingFailure({@required this.failureMessage});
+  final String title;
+  const CandidatesLoadingFailure(
+      {@required this.failureMessage, @required this.title});
   @override
-  List<Object> get props => [failureMessage];
+  List<Object> get props => [failureMessage, title];
 }
